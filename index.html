@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0173)file:///C:/Users/%EC%A4%80%EC%A0%95%EC%9D%B4%EB%84%A4/Downloads/%EC%9E%AC%EA%B0%80%EB%B3%B5%EC%A7%80%EC%84%BC%ED%84%B0_%ED%8F%89%EA%B0%80_%ED%95%99%EC%8A%B5%EC%95%B1_41.html -->
+<!-- saved from url=(0173)file:///C:/Users/%EC%A4%80%EC%A0%95%EC%9D%B4%EB%84%A4/Downloads/%EC%9E%AC%EA%B0%80%EB%B3%B5%EC%A7%80%EC%84%BC%ED%84%B0_%ED%8F%89%EA%B0%80_%ED%95%99%EC%8A%B5%EC%95%B1_43.html -->
 <html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -151,20 +151,20 @@ body {
       <div class="header-sub">효정재가복지센터</div>
       <div class="header-title">📋 2026 평가 대비 학습</div>
     </div>
-    <div class="header-count" id="headerCount">1 / 34</div>
+    <div class="header-count" id="headerCount">0 / 34</div>
   </div>
-  <div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width: 3%;"></div></div>
-  <div class="progress-label"><span>학습 진행률</span><span id="progressRight">3%</span></div>
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+  <div class="progress-label"><span>학습 진행률</span><span id="progressRight">0%</span></div>
 </div>
 
 <!-- 탭 -->
-<div class="tabs" id="tabsRow">
+<div class="tabs hidden" id="tabsRow">
   <button class="tab active" onclick="switchTab(&#39;all&#39;)">전체</button>
   <button class="tab" onclick="switchTab(&#39;review&#39;)">⭐ 다시 보기</button>
 </div>
 
 <!-- 인트로 화면 -->
-<div class="intro-screen hidden" id="introScreen">
+<div class="intro-screen" id="introScreen">
   <div class="intro-greeting">
     <span class="greeting-line">안녕하세요.</span>
     <span class="greeting-line">효정재가복지센터입니다.</span>
@@ -176,35 +176,33 @@ body {
 </div>
 
 <!-- 카드 영역 -->
-<div class="card-area" id="cardArea">
+<div class="card-area hidden" id="cardArea">
   <div class="category-badge badge-staff">👩‍⚕️ 직원 면담</div>
 
   <!-- 3D 플립 카드 -->
-  <div class="flip-scene" id="flipScene" onclick="toggleFlip()" style="height: 260px;">
+  <div class="flip-scene" id="flipScene" onclick="toggleFlip()">
     <!-- 높이 자동 확보용 참조 박스 -->
     <div class="flip-height-ref" id="heightRef">
       <div class="card-q-label">Q 질문</div>
       <div class="card-q-num" id="qNum">1 / 34</div>
-      <div class="card-q-text" id="qTextRef">급여제공지침 중 욕창예방 및 관리에 대해서 말씀해 주시기 바랍니다.</div>
+      <div class="card-q-text" id="qTextRef"></div>
       <div class="card-q-hint"><div class="hint-icon">👆</div>카드를 탭하면 정답을 확인해요</div>
     </div>
 
-    <div class="flip-card" id="flipCard" style="height: 260px;">
+    <div class="flip-card" id="flipCard">
       <!-- 앞면: 질문 -->
-      <div class="flip-face flip-face-q" id="cardQ" style="height: 260px;">
+      <div class="flip-face flip-face-q" id="cardQ">
         <div class="card-q-label">Q 질문</div>
-        <div class="card-q-num" id="qNum2">1 / 34</div>
-        <div class="card-q-text" id="qText">급여제공지침 중 욕창예방 및 관리에 대해서 말씀해 주시기 바랍니다.</div>
+        <div class="card-q-num" id="qNum2"></div>
+        <div class="card-q-text" id="qText"></div>
         <div class="card-q-hint"><div class="hint-icon">👆</div>카드를 탭하면 정답을 확인해요</div>
       </div>
       <!-- 뒷면: 정답 -->
-      <div class="flip-face flip-face-a" id="cardA" style="height: 260px;">
+      <div class="flip-face flip-face-a" id="cardA">
         <div class="card-a-label">A 정답</div>
-        <div class="card-a-q" id="aQ">급여제공지침 중 욕창예방 및 관리에 대해서 말씀해 주시기 바랍니다.</div>
+        <div class="card-a-q" id="aQ"></div>
         <div class="card-a-divider"></div>
-        <div class="card-a-text" id="aText">1. 욕창위험도 평가 및 관리
-2. 피부 청결, 건조
-3. 2시간마다 체위 변경</div>
+        <div class="card-a-text" id="aText"></div>
         <div class="card-a-hint">👆 카드를 다시 탭하면 질문으로</div>
       </div>
     </div>
@@ -218,8 +216,8 @@ body {
 </div>
 
 <!-- 내비게이션 -->
-<div class="nav-row" id="navRow">
-  <button class="nav-btn" id="prevBtn" disabled="">‹</button>
+<div class="nav-row hidden" id="navRow">
+  <button class="nav-btn" id="prevBtn">‹</button>
   <div class="nav-pos" id="navPos">1 / 34</div>
   <button class="nav-btn" id="nextBtn">›</button>
 </div>
