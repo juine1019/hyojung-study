@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<!-- saved from url=(0173)file:///C:/Users/%EC%A4%80%EC%A0%95%EC%9D%B4%EB%84%A4/Downloads/%EC%9E%AC%EA%B0%80%EB%B3%B5%EC%A7%80%EC%84%BC%ED%84%B0_%ED%8F%89%EA%B0%80_%ED%95%99%EC%8A%B5%EC%95%B1_41.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>효정재가복지센터 평가 대비 학습앱</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  background: #F5F0E8;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  margin: 0 auto;
+}
+/* ── 헤더 ── */
+.header {
+  background: #FAE100;
+  padding: 18px 20px 14px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.header-sub  { font-size: 14px; font-weight: 800; color: #7A6000; margin-bottom: 2px; }
+.header-title { font-size: 20px; font-weight: 800; color: #1A1A1A; }
+.header-count { font-size: 16px; font-weight: 700; color: #3D3D3D; background: rgba(0,0,0,0.10); padding: 5px 13px; border-radius: 20px; }
+.progress-wrap { background: rgba(0,0,0,0.12); border-radius: 5px; height: 8px; overflow: hidden; margin-bottom: 10px; }
+.progress-bar  { height: 100%; background: #3C1E1E; border-radius: 5px; transition: width 0.4s; }
+.progress-label { font-size: 14px; font-weight: 700; color: #3D3D3D; display: flex; justify-content: space-between; }
+/* ── 탭 ── */
+.tabs { display: flex; gap: 8px; padding: 14px 16px; background: #EDE8DC; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex-shrink: 0; padding: 10px 18px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; color: #555; background: #D8D1C2; }
+.tab.active { background: #3C1E1E; color: #FAE100; }
+/* ── 인트로 ── */
+.intro-screen { flex: 1; display: flex; flex-direction: column; padding: 16px 20px 32px; }
+.intro-greeting { background: #fff; border-radius: 20px; padding: 28px 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1.5px solid rgba(0,0,0,0.05); margin-bottom: 20px; flex: 1; }
+.greeting-line { display: block; font-size: 21px; font-weight: 700; color: #1A1A1A; line-height: 1.9; }
+.intro-start-btn { width: 100%; padding: 20px; border-radius: 18px; border: none; background: #3C1E1E; color: #FAE100; font-size: 20px; font-weight: 800; cursor: pointer; transition: all 0.15s; }
+.intro-start-btn:active { transform: scale(0.97); }
+/* ── 카드 영역 ── */
+.card-area { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.category-badge { display: inline-flex; align-items: center; font-size: 15px; font-weight: 700; padding: 6px 14px; border-radius: 20px; align-self: flex-start; }
+.badge-staff { background: #D4EBFF; color: #0A4F8C; }
+
+/* ── 3D 플립 래퍼 ── */
+.flip-scene {
+  perspective: 1200px;
+  width: 100%;
+  cursor: pointer;
+  /* 높이는 JS에서 동적 설정 */
+  position: relative;
+}
+.flip-card {
+  width: 100%;
+  position: absolute;
+  top: 0; left: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+.flip-card.is-flipped {
+  transform: rotateY(180deg);
+}
+.flip-face {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 22px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+}
+/* 높이 측정용 (absolute라 화면에 안 보임) */
+.flip-height-ref {
+  position: absolute;
+  top: -9999px; left: 0;
+  width: 100%;
+  visibility: hidden;
+  pointer-events: none;
+  padding: 28px 24px;
+  border-radius: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+/* ── 질문 면 ── */
+.flip-face-q {
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+  border: 1.5px solid rgba(0,0,0,0.05);
+}
+.card-q-label { font-size: 14px; font-weight: 800; color: #FAE100; background: #3C1E1E; padding: 5px 14px; border-radius: 20px; align-self: flex-start; }
+.card-q-num   { font-size: 15px; color: #888; font-weight: 700; }
+.card-q-text  { font-size: 24px; font-weight: 800; color: #1A1A1A; line-height: 1.6; letter-spacing: -0.3px; }
+.card-q-hint  { font-size: 15px; color: #AAA; margin-top: 6px; display: flex; align-items: center; gap: 6px; }
+.hint-icon    { width: 28px; height: 28px; border-radius: 50%; background: #F0EAD8; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+
+/* ── 정답 면 ── */
+.flip-face-a {
+  background: #3C1E1E;
+  box-shadow: 0 4px 20px rgba(60,30,30,0.25);
+  transform: rotateY(180deg);
+}
+.card-a-label   { font-size: 14px; font-weight: 800; color: #3C1E1E; background: #FAE100; padding: 5px 14px; border-radius: 20px; align-self: flex-start; }
+.card-a-q       { font-size: 15px; color: rgba(255,255,255,0.60); line-height: 1.55; font-weight: 600; }
+.card-a-divider { height: 1px; background: rgba(255,255,255,0.15); }
+.card-a-text    { font-size: 22px; color: #FFF; line-height: 1.75; font-weight: 500; white-space: pre-line; }
+.card-a-hint    { font-size: 14px; color: rgba(255,255,255,0.45); }
+/* ── 하단 버튼 ── */
+.action-row { display: flex; gap: 10px; padding: 0 16px 16px; }
+.btn-again { flex: 1; padding: 16px 10px; border-radius: 16px; border: 2px solid #D8CEB8; background: #EDE8DC; font-size: 17px; font-weight: 800; color: #555; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.btn-again:active { transform: scale(0.97); }
+.btn-ok    { flex: 2; padding: 16px 10px; border-radius: 16px; border: none; background: #FAE100; font-size: 17px; font-weight: 800; color: #1A1A1A; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.btn-ok:active { transform: scale(0.97); background: #E8CF00; }
+/* ── 내비게이션 ── */
+.nav-row { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 4px 16px 20px; }
+.nav-btn  { width: 52px; height: 52px; border-radius: 50%; border: 2px solid #D8CEB8; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 24px; transition: all 0.15s; color: #444; }
+.nav-btn:active  { transform: scale(0.93); background: #F0EAD8; }
+.nav-btn:disabled { opacity: 0.3; cursor: default; }
+.nav-pos { font-size: 17px; font-weight: 800; color: #444; min-width: 70px; text-align: center; }
+/* ── 완료 화면 ── */
+.complete-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 20px; text-align: center; }
+.complete-emoji { font-size: 70px; margin-bottom: 18px; }
+.complete-title { font-size: 26px; font-weight: 900; color: #1A1A1A; margin-bottom: 10px; }
+.complete-sub   { font-size: 17px; color: #555; line-height: 1.7; margin-bottom: 28px; }
+.complete-stats { display: flex; gap: 12px; margin-bottom: 28px; width: 100%; }
+.stat-box { flex: 1; background: #fff; border-radius: 16px; padding: 20px 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+.stat-num { font-size: 32px; font-weight: 900; margin-bottom: 6px; }
+.stat-num.green { color: #1A7A4A; }
+.stat-num.red   { color: #C0392B; }
+.stat-label { font-size: 15px; color: #777; font-weight: 700; }
+.btn-restart        { width: 100%; padding: 18px; border-radius: 16px; border: none; background: #3C1E1E; color: #FAE100; font-size: 18px; font-weight: 800; cursor: pointer; }
+.btn-restart-review { width: 100%; padding: 18px; border-radius: 16px; border: 2px solid #3C1E1E; background: transparent; color: #3C1E1E; font-size: 18px; font-weight: 800; cursor: pointer; margin-top: 12px; }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-sub">효정재가복지센터</div>
+      <div class="header-title">📋 2026 평가 대비 학습</div>
+    </div>
+    <div class="header-count" id="headerCount">1 / 34</div>
+  </div>
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width: 3%;"></div></div>
+  <div class="progress-label"><span>학습 진행률</span><span id="progressRight">3%</span></div>
+</div>
+
+<!-- 탭 -->
+<div class="tabs" id="tabsRow">
+  <button class="tab active" onclick="switchTab(&#39;all&#39;)">전체</button>
+  <button class="tab" onclick="switchTab(&#39;review&#39;)">⭐ 다시 보기</button>
+</div>
+
+<!-- 인트로 화면 -->
+<div class="intro-screen hidden" id="introScreen">
+  <div class="intro-greeting">
+    <span class="greeting-line">안녕하세요.</span>
+    <span class="greeting-line">효정재가복지센터입니다.</span>
+    <span class="greeting-line">재가복지센터 공단평가가 진행될 예정입니다.</span>
+    <span class="greeting-line">공단 평가 중 직원 면담시 예상되는 질문사항을 준비하였습니다.</span>
+    <span class="greeting-line">잘 숙지하시어 평가방문시 올바른 답변을 해주시길 당부드립니다.</span>
+  </div>
+  <button class="intro-start-btn" id="startBtn">📚 학습 시작하기</button>
+</div>
+
+<!-- 카드 영역 -->
+<div class="card-area" id="cardArea">
+  <div class="category-badge badge-staff">👩‍⚕️ 직원 면담</div>
+
+  <!-- 3D 플립 카드 -->
+  <div class="flip-scene" id="flipScene" onclick="toggleFlip()" style="height: 260px;">
+    <!-- 높이 자동 확보용 참조 박스 -->
+    <div class="flip-height-ref" id="heightRef">
+      <div class="card-q-label">Q 질문</div>
+      <div class="card-q-num" id="qNum">1 / 34</div>
+      <div class="card-q-text" id="qTextRef">급여제공지침 중 욕창예방 및 관리에 대해서 말씀해 주시기 바랍니다.</div>
+      <div class="card-q-hint"><div class="hint-icon">👆</div>카드를 탭하면 정답을 확인해요</div>
+    </div>
+
+    <div class="flip-card" id="flipCard" style="height: 260px;">
+      <!-- 앞면: 질문 -->
+      <div class="flip-face flip-face-q" id="cardQ" style="height: 260px;">
+        <div class="card-q-label">Q 질문</div>
+        <div class="card-q-num" id="qNum2">1 / 34</div>
+        <div class="card-q-text" id="qText">급여제공지침 중 욕창예방 및 관리에 대해서 말씀해 주시기 바랍니다.</div>
+        <div class="card-q-hint"><div class="hint-icon">👆</div>카드를 탭하면 정답을 확인해요</div>
+      </div>
+      <!-- 뒷면: 정답 -->
+      <div class="flip-face flip-face-a" id="cardA" style="height: 260px;">
+        <div class="card-a-label">A 정답</div>
+        <div class="card-a-q" id="aQ">급여제공지침 중 욕창예방 및 관리에 대해서 말씀해 주시기 바랍니다.</div>
+        <div class="card-a-divider"></div>
+        <div class="card-a-text" id="aText">1. 욕창위험도 평가 및 관리
+2. 피부 청결, 건조
+3. 2시간마다 체위 변경</div>
+        <div class="card-a-hint">👆 카드를 다시 탭하면 질문으로</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 하단 버튼 -->
+<div class="action-row hidden" id="actionRow">
+  <button class="btn-again" id="btnAgain">🔁 다시 볼게요</button>
+  <button class="btn-ok" id="btnOk">✅ 알았어요!</button>
+</div>
+
+<!-- 내비게이션 -->
+<div class="nav-row" id="navRow">
+  <button class="nav-btn" id="prevBtn" disabled="">‹</button>
+  <div class="nav-pos" id="navPos">1 / 34</div>
+  <button class="nav-btn" id="nextBtn">›</button>
+</div>
+
+<!-- 완료 화면 -->
+<div class="complete-screen hidden" id="completeScreen">
+  <div class="complete-emoji">🎉</div>
+  <div class="complete-title">학습 완료!</div>
+  <div class="complete-sub">모든 카드를 학습했어요.<br>어르신들에게 최고의 서비스를 제공하실 거예요!</div>
+  <div class="complete-stats">
+    <div class="stat-box"><div class="stat-num green" id="statOk">0</div><div class="stat-label">✅ 알았어요</div></div>
+    <div class="stat-box"><div class="stat-num red" id="statReview">0</div><div class="stat-label">🔁 다시 보기</div></div>
+  </div>
+  <button class="btn-restart" id="btnRestart">🔄 처음부터 다시 시작</button>
+  <button class="btn-restart-review hidden" id="btnReviewOnly">⭐ 다시 보기 카드만</button>
+</div>
+
+<script>
+var CARDS = [
+  {q:'급여제공지침 중 욕창예방 및 관리에 대해서 말씀해 주시기 바랍니다.',
+   a:'1. 욕창위험도 평가 및 관리\n2. 피부 청결, 건조\n3. 2시간마다 체위 변경'},
+  {q:'급여제공지침 중 감염예방 및 관리지침에 대해서 말씀해 주시기 바랍니다.',
+   a:'1. 위생장갑 착용\n2. 감염 의심 시 센터 및 보호자에게 안내'},
+  {q:'올해 급여제공지침 교육은 언제 어떻게 받으셨습니까?',
+   a:'1. ___월에 센터에서 실시해서 받았음.\n2. 센터에서 매년 시행하고 있는 걸로 알고 있음.'},
+  {q:'근무 중 발생할 수 있는 직원 인권침해 유형에는 어떤 것들이 있나요?',
+   a:'1. 폭언\n2. 폭행\n3. 성희롱\n4. 급여 외 요구 등'},
+  {q:'폭언·폭행 상황이 발생하면 어떻게 즉시 대응하나요?',
+   a:'1. 즉시 중단 요청 경고\n2. 지속되면 관리자에게 보고\n3. 필요시 경찰에 신고'},
+  {q:'성희롱·부적절한 언행을 당했을 때 누구에게, 어떻게 보고하나요?',
+   a:'1. 바로 관리자에게 구두보고\n2. 문서로 기록'},
+  {q:'급여 외 요구를 받으면 어떻게 대응하고 보고하나요?',
+   a:'1. 급여 범위가 아님을 안내\n2. 즉시 관리자에게 보고'},
+  {q:'직원 인권침해 발생 시 기관에서 어떤 조치를 해준다고 알고 있나요?',
+   a:'<센터의 단계별 대응 방안>\n1. 현장지원\n2. 상담\n3. 보호조치\n4. 고충기구 심의\n5. 재발방지 조치'},
+  {q:'고충처리 절차에 대해 설명해 주세요.',
+   a:'1. 고충접수\n2. 기관에서 30일 내에 처리\n3. 검토, 조치\n4. 직원회의나 개인면담을 통해 결과 안내'},
+  {q:'기관에서 직원의 고충처리를 해결해 준 사례가 있나요?',
+   a:'1. 고충이 없었음.\n2. 고충이 있었으면 내용 얘기 후 상담 후 처리되었음.'},
+  {q:'고충처리가 발생하면 어떻게 접수하나요?',
+   a:'1. 고충처리함 이용\n   (센터 어디에 있는지 확인)\n2. 직원회의\n3. 개인면담(전화, 상담 등)'},
+  {q:'노인학대 발생 시 어떻게 하나요?',
+   a:'1. 센터에 보고\n2. 노인보호 전문기관에 신고\n   1577-1389\n   129'},
+  {q:'노인학대 예방 및 대응 방법은 무엇인가요?',
+   a:'1. 인권, 학대예방 교육 참석\n2. 어르신 신체, 정서 상태 지속 관찰\n3. 학대 의심 시 즉시 센터 보고'},
+  {q:'노인학대 유형에 대해 말씀해 주세요.',
+   a:'1. 신체적 학대\n2. 정서적 학대\n3. 성적 학대\n4. 재정적 학대\n5. 방임\n6. 유기'},
+  {q:'노인학대 신고 전화번호는 무엇인가요?',
+   a:'1. 1577-1389 노인보호전문기관\n2. 129 보건복지부 노인학대 신고전화'},
+  {q:'노인권리보호에 대해 알고 있는 내용이 있나요?',
+   a:'1. 존엄하게 대우받을 권리\n2. 질 높은 서비스를 받을 권리\n3. 사생활 보호\n4. 신체구속 금지'},
+  {q:'급여 제공 전 시설장(사회복지사)으로부터 급여제공계획에 대해 설명을 듣고 있나요?',
+   a:'네, 서비스 시작 전 시설장(사회복지사)에게 급여제공계획서 내용을 설명 듣고 숙지한 후 서비스를 제공합니다.'},
+  {q:'수급자에게 제공하는 기능회복훈련과 일상생활동작의 종류를 알려주세요.',
+   a:'1. 기능회복훈련\n   - 관절운동\n   - 보행훈련\n   - 근력강화훈련\n2. 일상생활동작훈련\n   - 식사\n   - 배설\n   - 목욕\n   - 이동\n   - 개인위생'},
+  {q:'수급자의 급여제공계획 변경이 필요한 경우에는 어떤 상황들이 있을까요?',
+   a:'급여제공계획서를 변경합니다.'},
+  {q:'어르신에게 급여 제공 전 수급자의 건강상태, 가정 및 생활환경, 특이사항 등에 대해 인수인계를 받으셨나요?',
+   a:'네, 급여제공 전 센터로부터 어르신 건강상태와 주의사항에 대해 설명듣고 인수인계 받았습니다.'},
+  {q:'심정지 시 해야 할 응급처치 내용은?',
+   a:'1. 수급자의 의식과 호흡을 확인\n2. 즉시 119 신고\n3. 호흡이 없으면 즉시 가슴압박 시행\n4. 필요한 경우 자동제세동기 사용'},
+  {q:'질식(기도폐쇄) 발생 시 해야 할 응급처치는?',
+   a:'1. 입안 이물질을 제거\n2. 기침 유도 및 두드리기\n3. 하임리히법 시행\n4. 즉시 119 신고'},
+  {q:'경련 발생 시 해야 할 응급처치는?',
+   a:'1. 머리 밑에 부드러운 것 대주기\n2. 주변 위험물 치워 다치지 않게 하기\n3. 억지로 잡거나 입에 물건을 넣지 않기\n4. 호흡, 경련 양상 관찰'},
+  {q:'화상 발생 시 해야 할 응급처치는?',
+   a:'1. 화상 부위를 찬물로 충분히 식히기 (15분~20분)\n2. 붙어 있는 옷은 잡아당기지 않고 잘라내기\n3. 장신구 제거\n4. 감염되지 않도록 깨끗하게 보호'},
+  {q:'낙상 발생 시 해야 할 응급처치는?',
+   a:'1. 수급자 안정\n2. 통증, 출혈, 골절 여부 확인\n3. 무리하게 움직이지 않기\n4. 관리자에게 보고\n5. 필요시 의료기관으로 이송'},
+  {q:'수급자에게 발생할 수 있는 낙상 요인에는 어떤 것들이 있나요?',
+   a:'<내면적 요인>\n1. 치매로 인한 판단력 저하\n2. 어지러움\n3. 보행불안\n4. 시력저하\n\n<외적 요인>\n1. 문턱, 전선 같은 장애물\n2. 어두운 조명\n3. 손잡이가 없는 화장실 환경 등'},
+  {q:'치매로 인해 나타날 수 있는 증상에는 어떤 것들이 있나요?',
+   a:'1. 배회\n2. 폭언\n3. 섬망\n4. 길 잃음\n5. 기억력 저하\n6. 판단력 저하\n7. 감정변화'},
+  {q:'급여 제공 중 발생할 수 있는 성폭력에는 어떤 유형이 있나요?',
+   a:'1. 성희롱 (성적인 말이나 농담)\n2. 성추행 (원하지 않는 신체 접촉)'},
+  {q:'성폭력 상황이 발생하면 요양보호사는 어떻게 대응해야 하나요?',
+   a:'1. 즉시 거부\n2. 급여 중단\n3. 안전한 장소로 이동\n4. 센터에 보고'},
+  {q:'성폭력 발생 사실은 누구에게, 어떻게 보고하나요?',
+   a:'1. 센터(센터장, 사회복지사)에 보고'},
+  {q:'급여제공지침 12가지는 무엇인가요?',
+   a:'1. 종사자 윤리지침\n2. 성폭력 예방지침\n3. 응급상황 대응지침\n4. 감염예방 및 관리지침\n5. 치매예방 및 관리지침\n6. 욕창예방 및 관리지침\n7. 낙상예방 및 관리지침\n8. 노인인권보호지침\n9. 근골격계 예방지침\n10. 개인정보보호지침\n11. 직원인권침해 대응지침\n12. 고충처리지침'},
+  {q:'센터에서 교육받은 운영규정 11가지에 대해 답하시오.',
+   a:'1. 이용자 모집방법 등에 관한 사항\n2. 이용계약에 관한 사항\n3. 이용료 등 비용변경절차\n4. 서비스내용과 비용부담\n5. 배상책임 및 면책범위\n6. 운영규정의 개정절차\n7. 인력관리 규정\n8. 보수(임금) 관련사항\n9. 직원복리후생\n10. 안전 및 보건관리\n11. 고충처리절차'},
+  {q:'근로계약서 내용에 대해 답하시오.',
+   a:'1. 최저시급: 10,320원\n2. 주휴수당: 주 15시간 이상 근무 시\n3. 연차수당: 1개월 이상 근무 시 1일\n4. 퇴직금 지급 조건: 월 60시간 이상 12개월 근무 시\n5. 4대보험 가입 조건: 60시간 이상 근무 시\n6. 효정재가 총 시급: 13,200원'},
+  {q:'응급상황의 종류에 대해서 설명하시오.',
+   a:'즉시 센터에 보고\n\n1. 심정지\n2. 질식\n3. 경련\n4. 낙상'}
+];
+
+/* 상태 */
+var tab      = 'all';
+var deck     = [];
+var idx      = 0;
+var okMap    = {};
+var rvMap    = {};
+var okCount  = 0;
+
+/* 헬퍼 */
+function $id(id){ return document.getElementById(id); }
+function show(id){ $id(id).classList.remove('hidden'); }
+function hide(id){ $id(id).classList.add('hidden'); }
+
+/* 덱 구성 */
+function buildDeck(){
+  if(tab==='review'){
+    var rv=CARDS.filter(function(c,i){return rvMap[i];});
+    return rv.length?rv:CARDS.slice();
+  }
+  return CARDS.slice();
+}
+
+/* 화면 그리기 */
+function render(){
+  var card  = deck[idx];
+  var orig  = CARDS.indexOf(card);
+  var total = deck.length;
+  $id('qNum').textContent    = (idx+1)+' / '+total;
+  $id('qNum2').textContent   = (idx+1)+' / '+total;
+  $id('navPos').textContent  = (idx+1)+' / '+total;
+  $id('qText').textContent   = card.q;
+  $id('qTextRef').textContent = card.q;
+  $id('aQ').textContent     = card.q;
+  $id('aText').textContent  = card.a;
+  /* 진행률 = 현재 위치 기준 */
+  var pct = Math.round((idx+1)/deck.length*100);
+  $id('headerCount').textContent   = (idx+1)+' / '+deck.length;
+  $id('progressBar').style.width   = pct+'%';
+  $id('progressRight').textContent = pct+'%';
+  $id('prevBtn').disabled = (idx===0);
+  $id('nextBtn').disabled = (idx===total-1);
+  $id('cardQ').style.borderLeft =
+    okMap[orig] ? '5px solid #27AE60' :
+    rvMap[orig] ? '5px solid #E74C3C' : '';
+  /* 카드 전환 후 높이 재계산 */
+  setTimeout(adjustHeight, 0);
+}
+
+function toggleFlip(){
+  var fc = $id('flipCard');
+  var flipped = fc.classList.toggle('is-flipped');
+  flipped ? show('actionRow') : hide('actionRow');
+  adjustHeight();
+}
+function showAnswer(){
+  $id('flipCard').classList.add('is-flipped');
+  show('actionRow');
+  adjustHeight();
+}
+function hideAnswer(){
+  $id('flipCard').classList.remove('is-flipped');
+  hide('actionRow');
+  adjustHeight();
+}
+function adjustHeight(){
+  var flipped = $id('flipCard').classList.contains('is-flipped');
+  var sceneW  = $id('flipScene').offsetWidth;
+
+  /* 측정할 원본 요소 */
+  var src = flipped ? $id('cardA') : $id('cardQ');
+
+  /* 임시 clone으로 실제 높이 측정 */
+  var clone = src.cloneNode(true);
+  clone.style.cssText = [
+    'position:fixed','top:-9999px','left:0',
+    'width:'+sceneW+'px',
+    'visibility:hidden',
+    'transform:none',
+    'backface-visibility:visible',
+    '-webkit-backface-visibility:visible',
+    'display:flex','flex-direction:column','gap:10px',
+    'padding:28px 24px','border-radius:22px',
+    'box-sizing:border-box'
+  ].join(';');
+  document.body.appendChild(clone);
+  var h = Math.max(clone.scrollHeight, 260);
+  document.body.removeChild(clone);
+
+  $id('flipScene').style.height = h + 'px';
+  $id('flipCard').style.height  = h + 'px';
+  /* 각 면도 동일 높이로 */
+  $id('cardQ').style.height = h + 'px';
+  $id('cardA').style.height = h + 'px';
+}
+
+/* 버튼 동작 */
+$id('startBtn').onclick = function(){
+  hide('introScreen');
+  show('tabsRow'); show('cardArea'); show('navRow');
+  deck = buildDeck(); idx = 0;
+  hideAnswer(); render();
+  setTimeout(adjustHeight, 50);
+};
+
+/* 카드 클릭은 flipScene onclick으로 처리 */
+
+$id('btnOk').onclick = function(){
+  var orig = CARDS.indexOf(deck[idx]);
+  if(!okMap[orig]){ okMap[orig]=true; okCount++; }
+  delete rvMap[orig];
+  if(idx < deck.length-1){ idx++; hideAnswer(); render(); }
+  else { doComplete(); }
+};
+
+$id('btnAgain').onclick = function(){
+  rvMap[CARDS.indexOf(deck[idx])] = true;
+  hideAnswer(); render();
+};
+
+$id('prevBtn').onclick = function(){
+  if(idx>0){ idx--; hideAnswer(); render(); }
+};
+$id('nextBtn').onclick = function(){
+  if(idx < deck.length-1){ idx++; hideAnswer(); render(); }
+  else { doComplete(); }
+};
+
+function doComplete(){
+  ['cardArea','actionRow','navRow','tabsRow'].forEach(hide);
+  show('completeScreen');
+  $id('statOk').textContent     = okCount;
+  var rc = Object.keys(rvMap).length;
+  $id('statReview').textContent = rc;
+  rc>0 ? show('btnReviewOnly') : hide('btnReviewOnly');
+}
+
+$id('btnRestart').onclick = function(){
+  okMap={}; rvMap={}; okCount=0; idx=0; tab='all';
+  deck = buildDeck();
+  hide('completeScreen');
+  ['cardArea','navRow','tabsRow'].forEach(show);
+  /* 탭 active 초기화 */
+  var btns=document.querySelectorAll('.tab');
+  btns[0].classList.add('active'); btns[1].classList.remove('active');
+  hideAnswer(); render();
+};
+
+$id('btnReviewOnly').onclick = function(){
+  tab='review'; deck=buildDeck(); idx=0;
+  hide('completeScreen');
+  ['cardArea','navRow','tabsRow'].forEach(show);
+  hideAnswer(); render();
+};
+
+function switchTab(t){
+  tab=t;
+  var btns=document.querySelectorAll('.tab');
+  btns[0].classList.toggle('active', t==='all');
+  btns[1].classList.toggle('active', t==='review');
+  deck=buildDeck(); idx=0; hideAnswer(); render();
+}
+</script>
+
+
+</body></html>
